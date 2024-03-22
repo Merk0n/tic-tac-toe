@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function Player({ children, name }) {
+export default function Player({ children, name, isActive }) {
     const inputStyle =
         'w-80 border-2 text-center border-gray-800 px-2 py-1 text-2xl lg:px-4 lg:py-2 lg:text-3xl';
 
@@ -20,13 +20,17 @@ export default function Player({ children, name }) {
         <div className='flex flex-row items-center lg:flex-col'>
             {isEditing ? (
                 <input
-                    className={`${inputStyle}`}
+                    className={`${inputStyle} ${isActive && 'border-4 border-red-300'}`}
                     type='text'
                     value={playerName}
                     onChange={handleNameChange}
                 />
             ) : (
-                <span className={`${inputStyle}`}>{playerName}</span>
+                <span
+                    className={`${inputStyle} ${isActive && 'border-4 border-red-300'}`}
+                >
+                    {playerName}
+                </span>
             )}
             <div className='mr-auto flex flex-row items-center gap-4'>
                 <span

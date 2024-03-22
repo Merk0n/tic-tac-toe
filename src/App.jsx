@@ -1,8 +1,17 @@
 import { FaGithub } from 'react-icons/fa';
 import Player from './components/Player';
 import GameBoard from './components/GameBoard';
+import { useState } from 'react';
 
 function App() {
+    const [activePlayer, setActivePlayer] = useState('X');
+
+    function handleSelectSquare() {
+        setActivePlayer((curActivePlayer) =>
+            curActivePlayer === 'X' ? 'O' : 'X',
+        );
+    }
+
     return (
         <>
             <header className='border-b-2 border-gray-800 bg-gray-600 p-5 text-green-200'>
@@ -13,16 +22,23 @@ function App() {
 
             <main className='flex flex-col gap-4 px-4'>
                 <div className='mt-4 grid grid-rows-1 justify-items-center gap-8 px-12 py-8 text-center text-3xl lg:grid-cols-3 lg:text-4xl'>
-                    <Player name={'Player1'}>X</Player>
+                    <Player isActive={activePlayer === 'X'} name={'Player1'}>
+                        X
+                    </Player>
 
                     <div className='row-start-1 row-end-2 text-3xl lg:col-start-2 lg:col-end-3 lg:text-4xl'>
                         Player X Turn
                     </div>
 
-                    <Player name={'Player2'}>O</Player>
+                    <Player isActive={activePlayer === 'O'} name={'Player2'}>
+                        O
+                    </Player>
                 </div>
 
-                <GameBoard />
+                <GameBoard
+                    onSelectSquare={handleSelectSquare}
+                    activePlayerSymbol={activePlayer}
+                />
                 <div className='mx-auto my-4 flex'>
                     <button className='rounded-lg border-2 border-gray-800 bg-gray-600 px-4 py-3 text-4xl text-green-200 hover:bg-gray-500 active:bg-gray-400 lg:px-5 lg:py-4 lg:text-5xl'>
                         RESET
