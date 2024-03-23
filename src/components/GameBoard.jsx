@@ -1,27 +1,20 @@
-import { useState } from 'react';
-
 const initialGameBoard = [
     [null, null, null],
     [null, null, null],
     [null, null, null],
 ];
 
-export default function GameBoard({ onSelectSquare, activePlayerSymbol }) {
+export default function GameBoard({ onSelectSquare, turns }) {
     const fieldStyle =
         'h-28 w-28 lg:h-36 lg:w-36 border border-gray-800 bg-gray-300 text-8xl lg:text-9xl text-center font-semibold cursor-pointer hover:bg-gray-400 active:bg-gray-500';
 
-    const [gameBoard, setGameBoard] = useState(initialGameBoard);
+    const gameBoard = initialGameBoard;
 
-    function handleSelectSquare(rowIndex, colIndex) {
-        setGameBoard((prevGameBoard) => {
-            const updatedGameBoard = prevGameBoard.map((innerArray) => [
-                ...innerArray,
-            ]);
-            updatedGameBoard[rowIndex][colIndex] = activePlayerSymbol;
-            return updatedGameBoard;
-        });
+    for (const turn of turns) {
+        const { square, player } = turn;
+        const { row, col } = square;
 
-        onSelectSquare();
+        gameBoard[row][col] = player;
     }
 
     return (
@@ -29,9 +22,10 @@ export default function GameBoard({ onSelectSquare, activePlayerSymbol }) {
             {gameBoard.map((row, rowIndex) =>
                 row.map((playerSymbol, colIndex) => (
                     <button
-                        onClick={() => handleSelectSquare(rowIndex, colIndex)}
+                        onClick={() => onSelectSquare(rowIndex, colIndex)}
                         key={rowIndex + colIndex}
                         className={fieldStyle}
+                        disabled={playerSymbol !== null}
                     >
                         {playerSymbol}
                     </button>

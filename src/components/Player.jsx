@@ -27,14 +27,14 @@ export default function Player({ children, name, isActive }) {
                 />
             ) : (
                 <span
-                    className={`${inputStyle} ${isActive && 'border-4 border-red-300'}`}
+                    className={`${inputStyle} ${isActive && 'border-4 border-red-300'} bg-gray-500/60`}
                 >
                     {playerName}
                 </span>
             )}
             <div className='mr-auto flex flex-row items-center gap-4'>
                 <span
-                    className={`${inputStyle} w-14 border-l-0 bg-slate-400 lg:border-l-2 lg:border-t-0`}
+                    className={`w-16 border-2 border-l-0 border-gray-700 bg-slate-400 lg:border-l-2 lg:border-t-0`}
                 >
                     {children}
                 </span>
