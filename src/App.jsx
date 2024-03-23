@@ -3,6 +3,14 @@ import Player from './components/Player';
 import GameBoard from './components/GameBoard';
 import { useState } from 'react';
 import Log from './components/Log';
+import { WINNING_COMBINATIONS } from './winning-combinations.js';
+import GameOver from './components/GameOver.jsx';
+
+const initialGameBoard = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+];
 
 function deriveActivePlayer(gameTurns) {
     let currentPlayer = 'X';
@@ -13,9 +21,43 @@ function deriveActivePlayer(gameTurns) {
 }
 
 function App() {
+    const [player, setPlayer] = useState({
+        X: 'Player1',
+        O: 'Player2',
+    });
+
     const [gameTurns, setGameTurns] = useState([]);
 
     const activePlayer = deriveActivePlayer(gameTurns);
+
+    let gameBoard = [...initialGameBoard.map((array) => [...array])];
+    let winner;
+
+    for (const turn of gameTurns) {
+        const { square, player } = turn;
+        const { row, col } = square;
+
+        gameBoard[row][col] = player;
+    }
+
+    for (const combination of WINNING_COMBINATIONS) {
+        const firstSquareSymbol =
+            gameBoard[combination[0].row][combination[0].col];
+        const secondSquareSymbol =
+            gameBoard[combination[1].row][combination[1].col];
+        const thirdSquareSymbol =
+            gameBoard[combination[2].row][combination[2].col];
+
+        if (
+            firstSquareSymbol &&
+            firstSquareSymbol === secondSquareSymbol &&
+            firstSquareSymbol === thirdSquareSymbol
+        ) {
+            winner = player[firstSquareSymbol];
+        }
+    }
+
+    const isDraw = gameTurns.length === 9 && !winner;
 
     function handleSelectSquare(rowIndex, colIndex) {
         setGameTurns((prevTurns) => {
@@ -33,6 +75,15 @@ function App() {
         });
     }
 
+    function handleEditPlayerName(playerSymbol, newName) {
+        setPlayer((prevPlayers) => {
+            return {
+                ...prevPlayers,
+                [playerSymbol]: newName,
+            };
+        });
+    }
+
     return (
         <>
             <header className='border-b-2 border-gray-800 bg-gray-600 p-5 text-green-200'>
@@ -42,31 +93,33 @@ function App() {
             </header>
 
             <main className='flex flex-col gap-4 px-4'>
-                <div className=' mt-4 flex flex-col place-items-center justify-between gap-8 px-12 py-8 text-center text-3xl lg:flex-row lg:text-4xl'>
-                    <Player isActive={activePlayer === 'X'} name={'Player1'}>
-                        X
-                    </Player>
+                <div className=' mt-4 flex flex-col place-items-center justify-between gap-8 px-12 py-2  text-center text-3xl lg:flex-row lg:text-4xl'>
+                    <Player
+                        onChangeName={handleEditPlayerName}
+                        symbol='X'
+                        isActive={activePlayer === 'X'}
+                        initialName={'Player1'}
+                    ></Player>
 
-                    <Player isActive={activePlayer === 'O'} name={'Player2'}>
-                        O
-                    </Player>
+                    <Player
+                        onChangeName={handleEditPlayerName}
+                        symbol='O'
+                        isActive={activePlayer === 'O'}
+                        initialName={'Player2'}
+                    ></Player>
                 </div>
-
                 <GameBoard
                     onSelectSquare={handleSelectSquare}
-                    turns={gameTurns}
+                    board={gameBoard}
                 />
 
                 <Log turns={gameTurns} />
-
-                <div className='mx-auto my-4 flex'>
-                    <button className='rounded-lg border-2 border-gray-800 bg-gray-600 px-4 py-3 text-4xl text-green-200 hover:bg-gray-500 active:bg-gray-400 lg:px-5 lg:py-4 lg:text-5xl'>
-                        RESET
-                    </button>
-                </div>
             </main>
+            {(winner || isDraw) && (
+                <GameOver onReset={() => setGameTurns([])} winner={winner} />
+            )}
 
-            <footer className='sticky inset-x-0 bottom-0 flex items-center justify-center gap-1 text-lg lg:text-xl'>
+            <footer className='absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 text-lg lg:text-xl'>
                 <p>Copyright &copy; 2024 Merk0n</p>
                 <a href='https://github.com/Merk0n/tic-tac-toe'>
                     <FaGithub className='size-5 lg:size-6' />
