@@ -128,7 +128,7 @@ function App() {
                 <GameOver onReset={() => setGameTurns([])} winner={winner} />
             )}
 
-            <footer className='absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 text-lg lg:text-xl'>
+            <footer className='inset-x-0 bottom-0 flex flex items-center justify-center gap-1 text-lg lg:text-xl'>
                 <p>Copyright &copy; 2024 Merk0n</p>
                 <a href='https://github.com/Merk0n/tic-tac-toe'>
                     <FaGithub className='size-5 lg:size-6' />
